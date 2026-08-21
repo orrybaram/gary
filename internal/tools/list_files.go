@@ -1,4 +1,4 @@
-package main
+package tools
 
 import (
 	"encoding/json"
@@ -6,33 +6,31 @@ import (
 	"path/filepath"
 )
 
-var ListFilesDefinition = ToolDefinition{
+// ListFiles walks a directory and returns its entries as a JSON array.
+var ListFiles = Definition{
 	Name:        "list_files",
 	Description: "List files and directories at a given path. If no path is provided, list files in the current directory.",
-	InputSchema: ListFilesInputSchema,
-	Function:    ListFiles,
+	InputSchema: schemaFor[listFilesInput](),
+	Function:    listFiles,
 }
 
-type ListFilesInput struct {
+type listFilesInput struct {
 	Path string `json:"path,omitempty" jsonschema_description:"Optional relative path to list files from. Defaults to current directory if not provided."`
 }
 
-var ListFilesInputSchema = GenerateSchema[ListFilesInput]()
-
-func ListFiles(input json.RawMessage) (string, error) {
-	listFilesInput := ListFilesInput{}
-	err := json.Unmarshal(input, &listFilesInput)
-	if err != nil {
+func listFiles(input json.RawMessage) (string, error) {
+	var in listFilesInput
+	if err := json.Unmarshal(input, &in); err != nil {
 		return "", err
 	}
 
 	dir := "."
-	if listFilesInput.Path != "" {
-		dir = listFilesInput.Path
+	if in.Path != "" {
+		dir = in.Path
 	}
 
 	var files []string
-	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -51,7 +49,6 @@ func ListFiles(input json.RawMessage) (string, error) {
 		}
 		return nil
 	})
-
 	if err != nil {
 		return "", err
 	}

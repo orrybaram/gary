@@ -1,5 +1,5 @@
-# Compiled binary (matches the module name, built by `go build`)
-/agent
+# Build output
+/bin/
 
 # Go build/test artifacts
 *.exe

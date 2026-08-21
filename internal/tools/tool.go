@@ -1,4 +1,4 @@
-package main
+package tools
 
 import (
 	"encoding/json"
@@ -7,19 +7,19 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
-// ToolDefinition describes a single tool the agent can call: its name and
+// Definition describes a single tool the agent can call: its name and
 // description (sent to the model), the JSON schema for its input, and the
 // Go function that actually runs it.
-type ToolDefinition struct {
+type Definition struct {
 	Name        string                         `json:"name"`
 	Description string                         `json:"description"`
 	InputSchema anthropic.ToolInputSchemaParam `json:"input_schema"`
 	Function    func(input json.RawMessage) (string, error)
 }
 
-// GenerateSchema reflects over T to build the JSON schema advertised to the
-// model for a tool's input.
-func GenerateSchema[T any]() anthropic.ToolInputSchemaParam {
+// schemaFor reflects over T to build the JSON schema advertised to the model
+// for a tool's input.
+func schemaFor[T any]() anthropic.ToolInputSchemaParam {
 	reflector := jsonschema.Reflector{
 		AllowAdditionalProperties: false,
 		DoNotReference:            true,

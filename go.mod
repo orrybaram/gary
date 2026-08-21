@@ -1,4 +1,4 @@
-module agent
+module github.com/orrybaram/gary
 
 go 1.27.0
 
