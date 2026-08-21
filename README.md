@@ -6,6 +6,9 @@ Gary talks to the Anthropic API, and when the model asks for a tool, Gary runs
 it locally: reading files, listing directories, editing text, and executing
 bash commands in your working directory.
 
+<img width="557" height="249" alt="CleanShot 2026-08-21 at 16 58 24" src="https://github.com/user-attachments/assets/852df34e-660a-4051-8d7d-8fe7ea64cdb8" />
+
+
 ## Requirements
 
 - Go 1.27+
