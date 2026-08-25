@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"sync"
 	"time"
@@ -10,8 +11,45 @@ import (
 // spinnerFrames is the braille spinner cycle.
 var spinnerFrames = []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
 
+// catPhrases are the cat sounds and actions shown while work is in flight.
+// One is picked at random and swapped out every phraseInterval, so a long
+// wait reads like a cat pottering about rather than a frozen prompt.
+var catPhrases = []string{
+	"mrrp, thinking",
+	"purring over the code",
+	"kneading the keyboard",
+	"batting at the cursor",
+	"mrow, sniffing the diff",
+	"chasing a stray pointer",
+	"sitting on the warm laptop",
+	"prrp, licking a paw",
+	"stalking a bug",
+	"nyaa, stretching",
+	"knocking a semicolon off the desk",
+	"meow, staring at nothing",
+	"chirping at the birds outside",
+	"burrowing into the stack trace",
+	"mrrrow, demanding treats",
+	"curling up in a for loop",
+}
+
 // spinnerInterval is how often the frame advances.
 const spinnerInterval = 100 * time.Millisecond
+
+// phraseInterval is how long a cat phrase stays on screen before rotating.
+const phraseInterval = 3 * time.Second
+
+// catPhrase returns a random cat sound/action, avoiding an immediate repeat
+// of prev so consecutive rotations always visibly change.
+func catPhrase(prev string) string {
+	for range 8 {
+		p := catPhrases[rand.Intn(len(catPhrases))]
+		if p != prev {
+			return p
+		}
+	}
+	return prev
+}
 
 // Spinner draws an animated "working" indicator on a single terminal line
 // until Stop is called. Stop is synchronous: it guarantees the goroutine has
